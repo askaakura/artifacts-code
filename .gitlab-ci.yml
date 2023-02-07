@@ -5,13 +5,13 @@ stages:
 build:
   stage: build
   script:
-    - apt update -y
-    - apt install npm -y
+    - apt-get update -y
+    - apt-get install npm -y
     - npm install
 
 deploy:
   stage: deploy
   script:
-    - apt update -y
-    - apt install nodejs -y
+    - apt-get update -y
+    - apt-get install nodejs -y
     - node index.js
