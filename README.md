@@ -1,3 +1,3 @@
-# Artifacts Demo
+# Artifacts Demo Node Project
 
-Artifacts Project
+Artifacts Project to test different things related to servers. 
