@@ -1,17 +1,17 @@
-stages:
-  - build
+#stages:
+#  - build
 #  - deploy
 
-build:
-  image: node
-  stage: build
-  script:
-    - NODE_ENV=production
-    - yarn install
-  artifacts:
-    paths:
-      - node_modules
-      - package-lock.json
+#build:
+#  image: node
+#  stage: build
+#  script:
+#    - NODE_ENV=production
+#    - yarn install
+#  artifacts:
+#    paths:
+#      - node_modules
+#      - package-lock.json
     # expire_in: 1 week 
 
 #deploy:
@@ -21,3 +21,54 @@ build:
     # - apt update -y
     # - apt install nodejs -y
 #    - node index.js > /dev/null 2>&1 &
+#
+
+stages:
+  - build
+  - docker
+  - deploy
+
+variables:
+  KUBECONFIG: .kube/config
+
+prod_build:
+  image: node:v18.16.0
+  stage: build
+  script:
+    - NODE_ENV=production
+    - yarn install
+  artifacts:
+    paths:
+    - node_modules
+    - package-lockCCCC
+    expire_in: 1 week
+docker_image_build_release:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  stage: docker
+  only:
+    - tags
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:latest
+
+deploy:
+  image:
+    name: bitnami/kubectl@sha256:6410882b254fde82200c364b606b0cbb9b0fb802fede69011a33b9d28066b459 #1.25.9
+    entrypoint: [""]
+  cache: []
+  stage: deploy
+  only:
+    - tags
+  retry: 2
+  before_script:
+    - sed -ie "s/deploy-date-value/$(date)/g" kubernetes/deployment.yaml
+    - mkdir -p .kube/ && touch .kube/config
+    - echo ${KUBERNETES_KUBE_CONFIG} | base64 -d -i > ${KUBECONFIG}
+  script:
+    - kubectl apply -f kubernetes/deployment.yaml
+
+
