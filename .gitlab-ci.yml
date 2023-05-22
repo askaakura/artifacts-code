@@ -1,24 +1,26 @@
 stages:
   - build
-  - deploy
+#  - deploy
 
 build:
   image: node
   stage: build
   script:
-    # - apt update -y
-    # - apt install npm -y
-    - npm install
+    - NODE_ENV=production
+    - yarn install
+    - yarn test
+    - yarn build
   artifacts:
     paths:
-      - node_modules
-      - package-lock.json
+      - build/
+    #  - node_modules
+    #  - package-lock.json
     # expire_in: 1 week 
 
-deploy:
-  image: node
-  stage: deploy
-  script:
+#deploy:
+#  image: node
+#  stage: deploy
+#  script:
     # - apt update -y
     # - apt install nodejs -y
-    - node index.js > /dev/null 2>&1 &
+#    - node index.js > /dev/null 2>&1 &
