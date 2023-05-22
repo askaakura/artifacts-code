@@ -10,9 +10,8 @@ build:
     - yarn install
   artifacts:
     paths:
-      - build/
-    #  - node_modules
-    #  - package-lock.json
+      - node_modules
+      - package-lock.json
     # expire_in: 1 week 
 
 #deploy:
