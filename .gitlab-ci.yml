@@ -8,7 +8,6 @@ build:
   script:
     - NODE_ENV=production
     - yarn install
-    - yarn build
   artifacts:
     paths:
       - build/
