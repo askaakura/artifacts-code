@@ -1,0 +1,31 @@
+# Scenario
+# - how to create multicontainer in one pod,how the multicontainers in the same pod have same ethernet interface (IPs),
+# - how the multicontainers in the same pod can reach the shared volume area,
+# - how to make port-forwarding to host PC ports
+# Making a multicontainer pod
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lab3
+spec:
+  containers:
+  - name: webcontainer
+    image: nginx
+    ports:
+      - containerPort: 80
+    volumeMounts:           # pods share same volume
+    - name: sharedvolume
+      mountPath: /usr/share/nginx/html  # path inside container
+  - name: sidecarcontainer
+    image: busybox          # sidecar, 2nd container image is busybox to provide several unix utilities in a form of single executable file
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do wget -O /var/log/index.html https://raw.githubusercontent.com/omerbsezer/Fast-Kubernetes/main/index.html; sleep 15; done"]
+    # the args above pulls index.html file from the url every 15 seconds
+    volumeMounts:
+    - name: sharedvolume
+      mountPath: /var/log
+  volumes:                  # define emptydir temp volume, when pod is deleted, volume also gets deleted
+  - name: sharedvolume
+    emptyDir: {}
+
