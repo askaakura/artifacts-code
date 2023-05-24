@@ -8,6 +8,7 @@ build:
   script:
     - NODE_ENV=production
     - yarn install
+  when: manual
   artifacts:
     paths:
       - node_modules
@@ -21,4 +22,4 @@ deploy:
     # - apt update -y
     # - apt install nodejs -y
     - node index.js > /dev/null 2>&1 &
-
+  when: manual
