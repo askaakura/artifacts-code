@@ -1,8 +1,7 @@
-# Artifacts Demo Node Project
+# Repo is mainly to learn and test things.
+_This repo primary target is gitlab_
 
-Artifacts Project to test different things related to servers.
-
-Mainly to learn and test things.
+Also this repo consists an node app for test purpose.
 
 **K8s, Terraform and Ansible learning:**
 	Note Link: [simplenote note link](http://simp.ly/p/SG1MV2)
