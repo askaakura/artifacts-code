@@ -5,7 +5,7 @@ metadata:
   labels:
     team: development
 spec:
-  replicas: 3               # If one of pod is killed, k8s looks at the desired state (replica: 3), it recreates another pods
+  replicas: 3               # If one of pod is killed, k8s looks at the desired state (replica: 3), it recreates another set of pods
   selector:
     matchLabels:
       app: frontend
